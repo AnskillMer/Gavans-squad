@@ -2,296 +2,1844 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>WesLauncher — Элегантный старт в Minecraft</title>
-    <!-- Подключаем внешний CSS -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts + Font Awesome -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WesNal Launcher — Профессиональный инструмент для Minecraft</title>
+    <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #080d16;
+            --surface: rgba(18, 28, 40, 0.45);
+            --surface-hover: rgba(24, 36, 52, 0.55);
+            --accent: #0095FF;
+            --accent-dark: #1E5175;
+            --accent-glow: rgba(0, 149, 255, 0.25);
+            --text: #F0F4FA;
+            --text-secondary: #B8CAE3;
+            --text-muted: #6b7d95;
+            --radius-sm: 10px;
+            --radius: 16px;
+            --radius-lg: 24px;
+            --radius-xl: 32px;
+            --shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+            --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.6);
+            --shadow-accent: 0 0 40px rgba(0, 149, 255, 0.2);
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', 'JetBrains Mono', Consolas, monospace;
+            --sidebar-width: 270px;
+            --header-height: 64px;
+        }
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font);
+            background: radial-gradient(ellipse at 50% 0%, #0d1b2e 0%, #060d18 45%, #030810 100%) fixed;
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 700px;
+            background: radial-gradient(ellipse, rgba(0, 149, 255, 0.06) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: glowPulse 8s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: translateX(-50%) scale(1.15);
+            }
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='0.6' fill='%230095FF' opacity='0.08'/%3E%3C/svg%3E") repeat;
+            pointer-events: none;
+            z-index: 0;
+            animation: dotDrift 40s linear infinite;
+        }
+        @keyframes dotDrift {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-30px, -30px);
+            }
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8, 14, 22, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            height: var(--header-height);
+            display: flex;
+            align-items: center;
+            padding: 0 32px;
+            transition: var(--transition);
+        }
+        header.scrolled {
+            background: rgba(8, 14, 22, 0.85);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 24px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: -0.02em;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .logo:hover {
+            color: var(--accent);
+        }
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            color: #fff;
+            box-shadow: 0 0 18px var(--accent-glow);
+            position: relative;
+            animation: logoFloat 3s ease-in-out infinite;
+        }
+        @keyframes logoFloat {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-3px);
+            }
+        }
+        .logo-icon i {
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 6px;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.92rem;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            position: relative;
+            white-space: nowrap;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--text);
+            background: var(--surface);
+        }
+        .nav-links a.active {
+            color: var(--accent);
+            background: rgba(0, 149, 255, 0.1);
+        }
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .burger-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            z-index: 101;
+        }
+        .burger-btn:hover {
+            background: var(--surface);
+            color: var(--accent);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 32px 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page {
+            display: none;
+            animation: fadeSlideIn 0.4s ease-out;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .glass-card {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+        .glass-card:hover {
+            background: var(--surface-hover);
+            box-shadow: var(--shadow-lg);
+            border-color: rgba(255, 255, 255, 0.11);
+            transform: translateY(-2px);
+        }
+
+        .glass-card-static {
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: var(--radius);
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: var(--transition);
+            font-family: var(--font);
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+        .btn-primary:hover {
+            background: #1aa8ff;
+            box-shadow: 0 6px 28px rgba(0, 149, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(0, 149, 255, 0.06);
+        }
+        .btn-lg {
+            padding: 16px 32px;
+            font-size: 1.05rem;
+            border-radius: var(--radius-lg);
+        }
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            border-radius: var(--radius-sm);
+        }
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        footer {
+            background: rgba(8, 14, 22, 0.7);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 28px 32px;
+            text-align: center;
+            z-index: 1;
+            position: relative;
+        }
+        .footer-inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-copy {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .footer-socials {
+            display: flex;
+            gap: 8px;
+        }
+        .footer-socials a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--surface);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.2rem;
+            transition: var(--transition);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .footer-socials a:hover {
+            color: var(--accent);
+            background: rgba(0, 149, 255, 0.12);
+            border-color: var(--accent);
+            box-shadow: 0 0 16px var(--accent-glow);
+            transform: translateY(-3px);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            overflow: visible;
+        }
+        .hero-title {
+            font-size: clamp(2.4rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #c0d4f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.15;
+        }
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-weight: 400;
+            max-width: 550px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .particles-container {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: particleFloat 6s ease-in-out infinite;
+        }
+        @keyframes particleFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) scale(0);
+            }
+            15% {
+                opacity: 0.8;
+                transform: translateY(-40px) translateX(10px) scale(1.2);
+            }
+            50% {
+                opacity: 0.4;
+                transform: translateY(-180px) translateX(-20px) scale(0.7);
+            }
+            85% {
+                opacity: 0.1;
+                transform: translateY(-300px) translateX(30px) scale(0.3);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-380px) translateX(-10px) scale(0);
+            }
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+        .section-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+        .feature-card {
+            text-align: left;
+            cursor: default;
+        }
+        .feature-icon {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 14px;
+            display: block;
+            width: 52px;
+            height: 52px;
+            background: rgba(0, 149, 255, 0.1);
+            border-radius: var(--radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+        .glass-card:hover .feature-icon {
+            background: rgba(0, 149, 255, 0.18);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text);
+        }
+        .feature-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            margin-bottom: 48px;
+        }
+        .screenshot-placeholder {
+            aspect-ratio: 16/10;
+            background: rgba(30, 40, 55, 0.5);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition);
+            cursor: default;
+        }
+        .screenshot-placeholder:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            color: var(--text-secondary);
+            background: rgba(35, 48, 65, 0.5);
+        }
+        .screenshot-placeholder i {
+            font-size: 3rem;
+            opacity: 0.5;
+        }
+
+        .video-preview {
+            aspect-ratio: 16/9;
+            max-width: 700px;
+            margin: 0 auto 48px;
+            background: rgba(30, 40, 55, 0.5);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .video-preview:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-accent);
+        }
+        .video-preview .play-circle {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #fff;
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: var(--transition);
+            z-index: 1;
+        }
+        .video-preview:hover .play-circle {
+            transform: scale(1.1);
+            box-shadow: 0 0 50px rgba(0, 149, 255, 0.5);
+        }
+
+        .download-main {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .download-card {
+            max-width: 600px;
+            margin: 0 auto 32px;
+            text-align: center;
+            padding: 36px;
+        }
+        .download-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .download-info-item {
+            text-align: center;
+            min-width: 100px;
+        }
+        .download-info-item .val {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+        .download-info-item .lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+        .os-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: rgba(0, 149, 255, 0.12);
+            color: var(--accent);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .requirements-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 0.9rem;
+        }
+        .requirements-table th,
+        .requirements-table td {
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .requirements-table th {
+            color: var(--text-muted);
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.04em;
+        }
+        .requirements-table td {
+            color: var(--text);
+        }
+        .install-steps {
+            list-style: none;
+            counter-reset: step;
+            padding: 0;
+        }
+        .install-steps li {
+            counter-increment: step;
+            padding: 12px 0 12px 44px;
+            position: relative;
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            border-left: 1px solid rgba(255, 255, 255, 0.06);
+            margin-left: 12px;
+        }
+        .install-steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: -16px;
+            top: 10px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .wiki-layout {
+            display: flex;
+            gap: 0;
+            min-height: 70vh;
+            margin-top: 16px;
+        }
+        .wiki-sidebar {
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+            padding: 20px 0;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+            position: sticky;
+            top: calc(var(--header-height) + 20px);
+        }
+        .wiki-sidebar-search {
+            padding: 0 16px 16px;
+            position: relative;
+        }
+        .wiki-sidebar-search input {
+            width: 100%;
+            padding: 10px 14px 10px 36px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            color: var(--text);
+            font-family: var(--font);
+            font-size: 0.88rem;
+            transition: var(--transition);
+            outline: none;
+        }
+        .wiki-sidebar-search input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 149, 255, 0.1);
+        }
+        .wiki-sidebar-search i {
+            position: absolute;
+            left: 28px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        .wiki-nav-list {
+            list-style: none;
+            padding: 0;
+        }
+        .wiki-nav-list li a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            font-weight: 500;
+            position: relative;
+        }
+        .wiki-nav-list li a:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.03);
+            border-left-color: rgba(255, 255, 255, 0.2);
+        }
+        .wiki-nav-list li a.active {
+            color: var(--accent);
+            background: rgba(0, 149, 255, 0.08);
+            border-left-color: var(--accent);
+            font-weight: 600;
+        }
+        .wiki-nav-list li a i {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            transition: var(--transition);
+        }
+        .wiki-nav-list li a.active i {
+            color: var(--accent);
+        }
+        .wiki-nav-list li.hidden-by-search {
+            display: none;
+        }
+        .wiki-no-results {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            display: none;
+        }
+        .wiki-content {
+            flex: 1;
+            background: var(--surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+            border-left: none;
+            padding: 32px 36px;
+            overflow-y: auto;
+            max-height: calc(100vh - 140px);
+            position: sticky;
+            top: calc(var(--header-height) + 20px);
+        }
+        .wiki-breadcrumb {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .wiki-breadcrumb span {
+            color: var(--text-secondary);
+        }
+        .wiki-breadcrumb .sep {
+            color: var(--text-muted);
+        }
+        .wiki-content h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+        .wiki-content h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 28px 0 12px;
+            color: var(--text);
+            letter-spacing: -0.01em;
+        }
+        .wiki-content h3 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin: 20px 0 8px;
+            color: var(--text-secondary);
+        }
+        .wiki-content p {
+            margin-bottom: 12px;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+            line-height: 1.7;
+        }
+        .wiki-content ul,
+        .wiki-content ol {
+            margin: 8px 0 16px 20px;
+            color: var(--text-secondary);
+            font-size: 0.93rem;
+        }
+        .wiki-content li {
+            margin-bottom: 6px;
+        }
+        .wiki-content code {
+            background: rgba(40, 50, 65, 0.7);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #e0e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .wiki-content pre {
+            background: rgba(20, 28, 40, 0.8);
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.84rem;
+            color: #c8d6e5;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            margin: 12px 0 20px;
+            line-height: 1.5;
+        }
+        .wiki-content .warning-box {
+            background: rgba(255, 180, 30, 0.08);
+            border: 1px solid rgba(255, 180, 30, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin: 16px 0;
+            color: #f0c060;
+            font-size: 0.9rem;
+        }
+        .wiki-content .danger-box {
+            background: rgba(255, 70, 70, 0.08);
+            border: 1px solid rgba(255, 70, 70, 0.3);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin: 16px 0;
+            color: #f07070;
+            font-size: 0.9rem;
+        }
+        .wiki-content .info-box {
+            background: rgba(0, 149, 255, 0.07);
+            border: 1px solid rgba(0, 149, 255, 0.25);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            margin: 16px 0;
+            color: #80c8ff;
+            font-size: 0.9rem;
+        }
+        .wiki-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+        .wiki-content .screenshot-stub {
+            background: rgba(30, 40, 55, 0.6);
+            border-radius: var(--radius);
+            padding: 24px;
+            text-align: center;
+            color: var(--text-muted);
+            margin: 16px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .wiki-content .screenshot-stub i {
+            font-size: 2.5rem;
+            opacity: 0.4;
+        }
+
+        .scroll-top-btn {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 99;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: var(--transition);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px);
+        }
+        .scroll-top-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+        .scroll-top-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 149, 255, 0.45);
+        }
+
+        .features-page-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+        .feature-detail-card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feature-detail-card h3 i {
+            color: var(--accent);
+            font-size: 1.4rem;
+        }
+        .feature-detail-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .about-section {
+            max-width: 750px;
+            margin: 0 auto;
+        }
+        .about-section h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+        }
+        .about-section h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 28px 0 10px;
+            color: var(--text);
+        }
+        .about-section p {
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-size: 0.93rem;
+            line-height: 1.7;
+        }
+        .version-list {
+            list-style: none;
+            padding: 0;
+        }
+        .version-list li {
+            padding: 10px 16px;
+            border-left: 3px solid var(--accent-dark);
+            margin-bottom: 8px;
+            background: rgba(0, 149, 255, 0.03);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        .version-list li strong {
+            color: var(--accent);
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 200;
+            display: none;
+        }
+        .overlay.show {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .wiki-layout {
+                flex-direction: column;
+            }
+            .wiki-sidebar {
+                width: 100%;
+                border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+                position: static;
+                max-height: none;
+                padding: 16px;
+            }
+            .wiki-content {
+                border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+                border-left: 1px solid rgba(255, 255, 255, 0.07);
+                border-top: none;
+                position: static;
+                max-height: none;
+                padding: 24px 20px;
+            }
+            .wiki-nav-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 4px;
+            }
+            .wiki-nav-list li a {
+                border-left: none;
+                border-bottom: 3px solid transparent;
+                padding: 8px 14px;
+                border-radius: var(--radius-sm);
+                font-size: 0.82rem;
+            }
+            .wiki-nav-list li a.active {
+                border-left: none;
+                border-bottom-color: var(--accent);
+            }
+            .burger-btn {
+                display: block;
+            }
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                flex-direction: column;
+                background: rgba(10, 16, 26, 0.95);
+                backdrop-filter: blur(30px);
+                -webkit-backdrop-filter: blur(30px);
+                padding: 80px 24px 24px;
+                gap: 4px;
+                transition: var(--transition);
+                z-index: 100;
+                border-left: 1px solid rgba(255, 255, 255, 0.06);
+                box-shadow: -4px 0 30px rgba(0, 0, 0, 0.5);
+            }
+            .nav-links.open {
+                right: 0;
+            }
+            .nav-links a {
+                font-size: 1rem;
+                padding: 12px 16px;
+                width: 100%;
+            }
+            header {
+                padding: 0 16px;
+            }
+            main {
+                padding: 0 16px 24px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .features-page-grid {
+                grid-template-columns: 1fr;
+            }
+            .screenshots-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero {
+                padding: 60px 12px 40px;
+            }
+        }
+        @media (max-width: 600px) {
+            .hero-title {
+                font-size: 1.8rem;
+            }
+            .hero-subtitle {
+                font-size: 0.95rem;
+            }
+            .btn-lg {
+                padding: 12px 22px;
+                font-size: 0.9rem;
+            }
+            .glass-card {
+                padding: 18px;
+            }
+            .wiki-content {
+                padding: 16px 14px;
+            }
+            .wiki-content h1 {
+                font-size: 1.4rem;
+            }
+            .download-info {
+                gap: 10px;
+            }
+            .download-info-item .val {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<header>
-    <div class="container header-flex">
-        <div class="logo">
-            <div class="logo-icon">W</div>
-            <span>WesLauncher</span>
-        </div>
-        <div class="mobile-menu-btn" id="mobileMenuBtn">
-            <i class="fas fa-bars"></i>
-        </div>
-        <div class="nav-links" id="navLinks">
-            <a href="#home">Главная</a>
-            <a href="#features">Особенности</a>
-            <a href="#downloads">Скачать</a>
-            <a href="#faq">FAQ</a>
-            <a href="#downloads" class="btn btn-primary" style="padding: 8px 22px;">Скачать</a>
-        </div>
-    </div>
-</header>
-
-<main>
-    <section id="home">
-        <div class="container hero">
-            <div class="hero-content">
-                <h1><span class="hero-gradient">WesLauncher</span><br>Глубокий опыт в Minecraft</h1>
-                <p>Мощный, элегантный лаунчер с полным контролем версий, модов и скинов. Погружайся в игру без границ.</p>
-                <div class="hero-buttons">
-                    <button class="btn btn-primary" id="winHeroBtn"><i class="fab fa-windows"></i> Скачать для Windows</button>
-                    <a href="#downloads" class="btn btn-outline">Другие платформы →</a>
-                </div>
+    <div class="app-container">
+        <header id="siteHeader">
+            <div class="header-inner">
+                <a href="#home" class="logo" aria-label="WesNal">
+                    <span class="logo-icon"><i class="bx bx-cube-alt"></i></span>
+                    <span>WesNal</span>
+                </a>
+                <button class="burger-btn" id="burgerBtn" aria-label="Меню"><i class="bx bx-menu"></i></button>
+                <nav>
+                    <ul class="nav-links" id="navLinks">
+                        <li><a href="#home" data-page="home">Главная</a></li>
+                        <li><a href="#features" data-page="features">Возможности</a></li>
+                        <li><a href="#download" data-page="download">Скачать</a></li>
+                        <li><a href="#wiki" data-page="wiki">Wiki</a></li>
+                        <li><a href="#about" data-page="about">О проекте</a></li>
+                    </ul>
+                </nav>
             </div>
-            <div class="hero-preview">
-                <div class="mockup-window">
-                    <div class="mockup-bar">
-                        <div class="mockup-dot"></div>
-                        <div class="mockup-dot"></div>
-                        <div class="mockup-dot"></div>
-                    </div>
-                    <div class="mockup-content">
-                        <div class="mockup-line"></div>
-                        <div class="mockup-line accent"></div>
-                        <div class="mockup-line"></div>
-                        <div class="mockup-line" style="width: 55%;"></div>
+        </header>
+        <div class="overlay" id="overlay"></div>
+        <main>
+            <section class="page active" id="page-home">
+                <div class="hero">
+                    <div class="particles-container" id="particlesContainer"></div>
+                    <h1 class="hero-title">WesNal Launcher</h1>
+                    <p class="hero-subtitle">Профессиональный инструмент для Minecraft с Glass-дизайном, автооптимизацией и прямой интеграцией Modrinth</p>
+                    <div class="hero-buttons">
+                        <a href="#download" class="btn btn-primary btn-lg"><i class="bx bx-download"></i> Скачать для Windows</a>
+                        <a href="#wiki" class="btn btn-outline btn-lg"><i class="bx bx-book-open"></i> Документация</a>
                     </div>
                 </div>
-                <p style="text-align: center; margin-top: 18px; color:#A2BFE0;">Чистый интерфейс, полная свобода</p>
-            </div>
-        </div>
-    </section>
+                <div style="text-align:center;margin-bottom:48px;">
+                    <div class="video-preview" title="Смотреть обзор лаунчера">
+                        <div class="play-circle"><i class="bx bx-play"></i></div>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-bottom:12px;">
+                    <h2 class="section-title">Ключевые возможности</h2>
+                    <p class="section-subtitle">Всё, что нужно для комфортной игры и управления модами</p>
+                </div>
+                <div class="features-grid">
+                    <div class="glass-card feature-card">
+                        <span class="feature-icon"><i class="bx bx-rocket"></i></span>
+                        <h3>Производительность</h3>
+                        <p>WNO Core автоматически подбирает и устанавливает оптимизационные моды (Sodium, Lithium, Iris) для максимального FPS.</p>
+                    </div>
+                    <div class="glass-card feature-card">
+                        <span class="feature-icon"><i class="bx bx-shield-quarter"></i></span>
+                        <h3>Безопасность</h3>
+                        <p>Все файлы проверяются через контрольные суммы. Встроенная защита от вредоносных модов и фишинг-атак.</p>
+                    </div>
+                    <div class="glass-card feature-card">
+                        <span class="feature-icon"><i class="bx bx-package"></i></span>
+                        <h3>Modrinth Integration</h3>
+                        <p>Прямой доступ к каталогу Modrinth: поиск, установка и обновление модов, ресурспаков и шейдеров в один клик.</p>
+                    </div>
+                    <div class="glass-card feature-card">
+                        <span class="feature-icon"><i class="bx bx-palette"></i></span>
+                        <h3>Кастомизация</h3>
+                        <p>12 категорий настроек, гибкая тема оформления, выбор акцентного цвета, уровня размытия и анимаций интерфейса.</p>
+                    </div>
+                    <div class="glass-card feature-card">
+                        <span class="feature-icon"><i class="bx bx-cube"></i></span>
+                        <h3>Все загрузчики</h3>
+                        <p>Поддержка Vanilla, Fabric, Forge, Quilt и OptiFine. Автоматическая установка загрузчика при выборе версии.</p>
+                    </div>
+                    <div class="glass-card feature-card">
+                        <span class="feature-icon"><i class="bx bx-terminal"></i></span>
+                        <h3>Живая консоль</h3>
+                        <p>Встроенный терминал с выводом логов Minecraft, поддержкой команд диагностики и цветовой подсветкой.</p>
+                    </div>
+                </div>
+                <div style="text-align:center;margin-bottom:12px;">
+                    <h2 class="section-title">Скриншоты</h2>
+                    <p class="section-subtitle">Интерфейс лаунчера в действии</p>
+                </div>
+                <div class="screenshots-grid">
+                    <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Главный экран лаунчера</span></div>
+                    <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Библиотека версий</span></div>
+                    <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Поиск модов (Modrinth)</span></div>
+                </div>
+            </section>
 
-    <section id="features">
-        <div class="container">
-            <h2>Почему WesLauncher</h2>
-            <div class="features-grid">
-                <div class="feature-card fade-up">
-                    <div class="feature-icon"><i class="fas fa-bolt"></i></div>
-                    <h3>Мгновенный запуск</h3>
-                    <p>Оптимизированные ассеты и быстрая загрузка даже на старых ПК.</p>
+            <section class="page" id="page-features">
+                <div style="text-align:center;padding:40px 0 20px;">
+                    <h1 class="section-title" style="font-size:2.2rem;">Возможности WesNal</h1>
+                    <p class="section-subtitle">Полный обзор всех функций лаунчера</p>
                 </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon"><i class="fas fa-cubes"></i></div>
-                    <h3>Все версии Minecraft</h3>
-                    <p>От ранних Alpha до снапшотов, Forge и Fabric — автоустановка.</p>
+                <div class="features-page-grid">
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-library"></i> Библиотека версий</h3>
+                        <p>Полный список доступных версий Minecraft с фильтрацией по типу: Vanilla, Fabric, Forge, Quilt, OptiFine. Встроенный поиск и пагинация. Выбор версии и запуск в один клик. Лаунчер автоматически устанавливает нужный загрузчик через <code>@xmcl/installer</code>.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-search-alt-2"></i> Поиск модов (Modrinth)</h3>
+                        <p>Прямая интеграция с Modrinth API. Поиск по названию, фильтрация по категориям (моды, ресурспаки, шейдеры). Карточки с описанием, иконками и кнопками «Установить» и «Подробнее». Модальное окно с полной информацией и выбором версии.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-zap"></i> WNO Core</h3>
+                        <p>Автоматическая сборка оптимизации одним кликом. Устанавливает Sodium, Lithium, Iris Shaders и другие моды для максимальной производительности. Конфигурация хранится в <code>wno-core.json</code>. Поддерживает выбор версии игры и загрузчика.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-terminal"></i> Живая консоль</h3>
+                        <p>Встроенный терминал с выводом логов Minecraft в реальном времени. Поддерживает команды: <code>help</code>, <code>clear</code>, <code>gc</code>, <code>ram</code>, <code>version</code>, <code>java</code>, <code>ping</code>. Цветовая подсветка ошибок и предупреждений.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-slider-alt"></i> Кастомизация интерфейса</h3>
+                        <p>12 категорий настроек: Launcher, Game, Display, Performance, Java, Assets, Accounts, Mods, Network, Social, Control, Experimental. Изменение темы, акцентного цвета, уровня размытия, анимаций и поведения лаунчера.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-user-check"></i> Microsoft-авторизация</h3>
+                        <p>Вход через настоящий Microsoft-аккаунт с использованием MSMC. Доступ к лицензионному скину, сессионным серверам и полной функциональности онлайн-игры.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-folder-open"></i> Сборки (модпаки)</h3>
+                        <p>Создание и управление сборками модов. Возможность задать имя, версию Minecraft, добавлять моды через поиск. Экспорт в формат <code>.wesnalpack</code> и импорт готовых сборок.</p>
+                    </div>
+                    <div class="glass-card feature-detail-card">
+                        <h3><i class="bx bx-chip"></i> Диагностика системы</h3>
+                        <p>Отображение информации о процессоре, ОЗУ, Java и ОС. Автоматические рекомендации по оптимизации. Кнопка «Оптимизировать» для подбора идеальных настроек ОЗУ и потоков.</p>
+                    </div>
                 </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon"><i class="fas fa-puzzle-piece"></i></div>
-                    <h3>Управление модами</h3>
-                    <p>Встроенный менеджер с поддержкой сборок и удобной сортировкой.</p>
+                <div style="margin-top:32px;">
+                    <h2 class="section-title" style="text-align:center;">Скриншоты интерфейса</h2>
+                    <div class="screenshots-grid" style="margin-top:16px;">
+                        <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Главный экран</span></div>
+                        <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Библиотека версий</span></div>
+                        <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Страница дополнений</span></div>
+                        <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Настройки лаунчера</span></div>
+                        <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Консоль</span></div>
+                        <div class="screenshot-placeholder"><i class="bx bx-image"></i><span>Диагностика</span></div>
+                    </div>
                 </div>
-                <div class="feature-card fade-up">
-                    <div class="feature-icon"><i class="fas fa-microchip"></i></div>
-                    <h3>Гибкая Java</h3>
-                    <p>Автопоиск Java, ручная настройка ОЗУ и аргументов запуска.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <section id="downloads">
-        <div class="container">
-            <h2>Загрузите WesLauncher</h2>
-            <div class="downloads-grid">
-                <div class="download-card fade-up" data-os="win">
-                    <div class="os-icon"><i class="fab fa-windows"></i></div>
-                    <h3>Windows</h3>
-                    <div class="version-tag">v1.0.0</div>
-                    <div class="file-size">84 MB · .exe</div>
-                    <button class="btn btn-download active" id="winDownloadBtn"><i class="fas fa-download"></i> Скачать .exe</button>
+            <section class="page" id="page-download">
+                <div class="download-main">
+                    <h1 class="section-title" style="font-size:2.2rem;">Скачать WesNal</h1>
+                    <p class="section-subtitle">Выберите версию для вашей операционной системы</p>
+                    <div class="glass-card download-card" id="downloadCard">
+                        <div class="os-badge" id="osBadge">Windows</div>
+                        <h2 style="font-size:1.4rem;margin-bottom:8px;">WesNal Launcher для <span id="osName">Windows</span></h2>
+                        <p style="color:var(--text-secondary);margin-bottom:16px;">Актуальная версия с автоматической установкой</p>
+                        <a href="#" class="btn btn-primary btn-lg" id="downloadBtn"><i class="bx bx-download"></i> Скачать для <span id="downloadBtnOs">Windows</span></a>
+                        <div class="download-info">
+                            <div class="download-info-item"><div class="val">2.5.1</div><div class="lbl">Версия</div></div>
+                            <div class="download-info-item"><div class="val">~95 MB</div><div class="lbl">Размер</div></div>
+                            <div class="download-info-item"><div class="val">01.05.2026</div><div class="lbl">Релиз</div></div>
+                        </div>
+                        <p id="otherOsMsg" style="color:var(--text-muted);font-size:0.85rem;margin-top:8px;display:none;">Для вашей ОС установщик пока не готов. Оставьте заявку в <a href="https://discord.gg/uVt7EvtUcj" style="color:var(--accent);">Discord</a>.</p>
+                    </div>
+                    <div class="glass-card-static" style="max-width:650px;margin:0 auto 24px;text-align:left;">
+                        <h3 style="margin-bottom:12px;">Системные требования</h3>
+                        <table class="requirements-table">
+                            <thead><tr><th>Компонент</th><th>Минимальные</th><th>Рекомендуемые</th></tr></thead>
+                            <tbody>
+                                <tr><td>ОС</td><td>Windows 10 (64-bit)</td><td>Windows 11 (64-bit)</td></tr>
+                                <tr><td>ОЗУ</td><td>4 ГБ</td><td>8 ГБ+</td></tr>
+                                <tr><td>Java</td><td>Java 17</td><td>Java 21+</td></tr>
+                                <tr><td>Место на диске</td><td>500 МБ</td><td>2 ГБ+</td></tr>
+                                <tr><td>Видеокарта</td><td>Intel HD Graphics</td><td>NVIDIA GTX 1050+</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="glass-card-static" style="max-width:650px;margin:0 auto;text-align:left;">
+                        <h3 style="margin-bottom:16px;">Инструкция по установке</h3>
+                        <ol class="install-steps">
+                            <li>Скачайте установщик <code>WesNal-Setup.exe</code> по кнопке выше.</li>
+                            <li>Запустите файл и выберите папку для установки лаунчера.</li>
+                            <li>Дождитесь завершения установки — лаунчер запустится автоматически.</li>
+                            <li>При первом запуске выберите версию Minecraft и нажмите «Играть».</li>
+                            <li>Для установки модов перейдите на вкладку «Дополнения» и воспользуйтесь поиском Modrinth.</li>
+                        </ol>
+                    </div>
                 </div>
-                <div class="download-card fade-up" data-os="mac">
-                    <div class="os-icon"><i class="fab fa-apple"></i></div>
-                    <h3>macOS</h3>
-                    <div class="version-tag">в разработке</div>
-                    <div class="file-size">—</div>
-                    <button class="btn btn-download btn-disabled" disabled><i class="fas fa-clock"></i> Скоро</button>
-                </div>
-                <div class="download-card fade-up" data-os="linux">
-                    <div class="os-icon"><i class="fab fa-linux"></i></div>
-                    <h3>Linux</h3>
-                    <div class="version-tag">будущий релиз</div>
-                    <div class="file-size">—</div>
-                    <button class="btn btn-download btn-disabled" disabled><i class="fas fa-hourglass-half"></i> В планах</button>
-                </div>
-            </div>
-            <div class="github-link">
-                <a href="#"><i class="fab fa-github"></i> Все версии, портативные сборки и исходный код</a>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <section id="gallery">
-        <div class="container">
-            <h2>Интерфейс в деталях</h2>
-            <div class="gallery">
-                <div class="screenshot-card fade-up" data-screen="1">
-                    <div class="screenshot-img"><i class="fas fa-layer-group"></i><i class="fas fa-gamepad"></i></div>
-                    <p>Выбор профиля и версии Minecraft</p>
+            <section class="page" id="page-wiki">
+                <div style="padding-top:16px;">
+                    <div class="wiki-layout">
+                        <aside class="wiki-sidebar" id="wikiSidebar">
+                            <div class="wiki-sidebar-search">
+                                <i class="bx bx-search"></i>
+                                <input type="text" id="wikiSearch" placeholder="Поиск по документации...">
+                            </div>
+                            <ul class="wiki-nav-list" id="wikiNavList"></ul>
+                            <div class="wiki-no-results" id="wikiNoResults">Ничего не найдено</div>
+                        </aside>
+                        <div class="wiki-content" id="wikiContent">
+                            <div class="wiki-breadcrumb" id="wikiBreadcrumb">Wiki <span class="sep">→</span> <span id="wikiCrumbSection">Введение</span></div>
+                            <div id="wikiContentInner"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="screenshot-card fade-up" data-screen="2">
-                    <div class="screenshot-img"><i class="fas fa-puzzle-piece"></i><i class="fas fa-list"></i></div>
-                    <p>Менеджер модов и сборок</p>
-                </div>
-                <div class="screenshot-card fade-up" data-screen="3">
-                    <div class="screenshot-img"><i class="fas fa-sliders-h"></i><i class="fas fa-chart-line"></i></div>
-                    <p>Настройки памяти и Java</p>
-                </div>
-            </div>
-        </div>
-    </section>
+            </section>
 
-    <section id="faq">
-        <div class="container">
-            <h2>Ответы на вопросы</h2>
-            <div class="faq-list">
-                <div class="faq-item fade-up">
-                    <div class="faq-question">Нужно ли покупать Minecraft? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Нет, WesLauncher поддерживает как лицензионные, так и пиратские версии. Играйте без ограничений.</div>
+            <section class="page" id="page-about">
+                <div class="about-section" style="padding-top:40px;">
+                    <h1>О проекте WesNal</h1>
+                    <p>WesNal — современный Minecraft-лаунчер, созданный с упором на дизайн, производительность и удобство использования. Проект объединяет лучшие практики сообщества и передовые технологии для обеспечения максимального комфорта игроков.</p>
+                    <h2>Разработчик</h2>
+                    <p>Лаунчер разрабатывается независимым разработчиком, известным под никнеймом <strong>WesNal</strong>. Связь через <a href="https://t.me/wesnallauncher" style="color:var(--accent);">Telegram</a> и <a href="https://discord.gg/uVt7EvtUcj" style="color:var(--accent);">Discord</a>.</p>
+                    <h2>Технологии</h2>
+                    <p>Лаунчер построен на базе <strong>Electron</strong> с использованием <strong>Node.js</strong> для серверной логики и чистого <strong>HTML/CSS/JavaScript</strong> для интерфейса. Glassmorphism-дизайн достигается через CSS-свойства <code>backdrop-filter</code> и полупрозрачные поверхности. Для установки загрузчиков используется библиотека <code>@xmcl/installer</code>. Авторизация Microsoft реализована через <strong>MSMC</strong>.</p>
+                    <h2>История версий</h2>
+                    <ul class="version-list">
+                        <li><strong>v2.5.1</strong> — Май 2026: Улучшена стабильность, добавлена поддержка Quilt 0.30.0-beta.7, исправлены ошибки поиска модов.</li>
+                        <li><strong>v2.5.0</strong> — Апрель 2026: Полная интеграция Modrinth, WNO Core v2, новая система сборок.</li>
+                        <li><strong>v2.4.0</strong> — Март 2026: Добавлена Microsoft-авторизация, диагностика системы, 12 категорий настроек.</li>
+                        <li><strong>v2.3.0</strong> — Февраль 2026: Живая консоль, поддержка Fabric/Forge/Quilt, мультиязычность.</li>
+                        <li><strong>v2.0.0</strong> — Январь 2026: Первый публичный релиз с Glass-дизайном.</li>
+                    </ul>
+                    <h2>Благодарности</h2>
+                    <p>Особая благодарность сообществам <strong>Modrinth</strong>, <strong>FabricMC</strong>, <strong>QuiltMC</strong> и всем контрибьюторам открытого ПО, чьи наработки сделали этот лаунчер возможным.</p>
+                    <h2>Лицензия</h2>
+                    <p>Проект распространяется под лицензией MIT. Исходный код доступен на <a href="#" style="color:var(--accent);">GitHub</a>.</p>
                 </div>
-                <div class="faq-item fade-up">
-                    <div class="faq-question">Как установить сборку модов? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Перетащите ZIP-архив с модами в окно лаунчера — автоматическая установка и активация.</div>
-                </div>
-                <div class="faq-item fade-up">
-                    <div class="faq-question">Безопасен ли лаунчер? <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Полностью открытый исходный код, независимые проверки на VirusTotal. Ваши данные не собираются.</div>
-                </div>
-                <div class="faq-item fade-up">
-                    <div class="faq-question">Системные требования <i class="fas fa-chevron-down"></i></div>
-                    <div class="faq-answer">Windows 10/11, 4+ ГБ ОЗУ. Для macOS и Linux поддержка появится позже.</div>
+            </section>
+        </main>
+        <footer>
+            <div class="footer-inner">
+                <span class="footer-copy">&copy; 2026 WesNal. Все права защищены.</span>
+                <div class="footer-socials">
+                    <a href="https://t.me/wesnallauncher" target="_blank" rel="noopener" title="Telegram"><i class="bx bxl-telegram"></i></a>
+                    <a href="https://discord.gg/uVt7EvtUcj" target="_blank" rel="noopener" title="Discord"><i class="bx bxl-discord-alt"></i></a>
+                    <a href="#" target="_blank" rel="noopener" title="GitHub"><i class="bx bxl-github"></i></a>
                 </div>
             </div>
-        </div>
-    </section>
-</main>
-
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-logo" style="font-weight: 600;">WesLauncher</div>
-            <div class="footer-links">
-                <a href="https://discord.gg/uVt7EvtUcj" target="_blank" rel="noopener"><i class="fab fa-discord"></i> Discord</a>
-                <a href="https://t.me/wesnallauncher" target="_blank" rel="noopener"><i class="fab fa-telegram"></i> Telegram</a>
-                <a href="#"><i class="fab fa-github"></i> GitHub</a>
-                <a href="#">Политика конфиденциальности</a>
-                <a href="#">Поддержка</a>
-            </div>
-        </div>
-        <div class="copyright">
-            © 2026 WesLauncher. Не является официальным продуктом Mojang. Minecraft — торговая марка Mojang AB.
-        </div>
+        </footer>
+        <button class="scroll-top-btn" id="scrollTopBtn" title="Наверх"><i class="bx bx-chevron-up"></i></button>
     </div>
-</footer>
+    <script>
+        (function() {
+            const wikiContent = {
+                'intro': {
+                    title: 'Введение',
+                    content: `
+                        <h1>Добро пожаловать в WesNal</h1>
+                        <p>WesNal — это современный Minecraft-лаунчер, созданный для игроков, которые ценят производительность, удобство и стильный дизайн. Лаунчер поддерживает все популярные загрузчики модов, имеет встроенную систему автоматической оптимизации и прямую интеграцию с каталогом Modrinth.</p>
+                        <h2>Ключевые возможности</h2>
+                        <ul>
+                            <li><strong>Glass-дизайн</strong> — полупрозрачные панели с эффектом размытия, тёмная тема и плавные анимации.</li>
+                            <li><strong>Поддержка всех загрузчиков</strong> — Vanilla, Fabric, Forge, Quilt и OptiFine устанавливаются автоматически.</li>
+                            <li><strong>WNO Core</strong> — оптимизация в один клик: Sodium, Lithium, Iris Shaders и другие моды подбираются под вашу версию.</li>
+                            <li><strong>Интеграция с Modrinth</strong> — поиск и установка модов, ресурспаков и шейдеров прямо из лаунчера.</li>
+                            <li><strong>Мультиязычность</strong> — интерфейс доступен на нескольких языках, включая русский.</li>
+                            <li><strong>Безопасность</strong> — проверка файлов по контрольным суммам, защита от вредоносного ПО.</li>
+                        </ul>
+                        <div class="info-box">WesNal использует передовые технологии: Electron, Node.js и современные веб-стандарты для обеспечения максимальной производительности и кроссплатформенности.</div>
+                    `
+                },
+                'installation': {
+                    title: 'Установка и первый запуск',
+                    content: `
+                        <h1>Установка и первый запуск</h1>
+                        <h2>Системные требования</h2>
+                        <ul>
+                            <li><strong>ОС:</strong> Windows 10/11 (64-бит)</li>
+                            <li><strong>ОЗУ:</strong> минимум 4 ГБ (рекомендуется 8 ГБ+)</li>
+                            <li><strong>Java:</strong> Java 17 или новее (рекомендуется Java 21)</li>
+                            <li><strong>Место на диске:</strong> 500 МБ для лаунчера + место для файлов игры</li>
+                        </ul>
+                        <h2>Шаги установки</h2>
+                        <ol>
+                            <li>Скачайте установщик <code>WesNal-Setup.exe</code> со страницы «Скачать».</li>
+                            <li>Запустите установщик и выберите папку назначения (по умолчанию <code>C:\\Program Files\\WesNal</code>).</li>
+                            <li>Дождитесь завершения установки — лаунчер запустится автоматически.</li>
+                            <li>При первом запуске выберите версию Minecraft из списка и нажмите <strong>«Играть»</strong>.</li>
+                        </ol>
+                        <div class="warning-box">Убедитесь, что у вас установлена Java 17 или новее. Если Java не найдена, лаунчер предложит скачать её автоматически.</div>
+                        <div class="screenshot-stub"><i class="bx bx-image"></i><span>Скриншот: Окно установки WesNal</span></div>
+                    `
+                },
+                'versions': {
+                    title: 'Библиотека версий',
+                    content: `
+                        <h1>Библиотека версий</h1>
+                        <p>Главная страница лаунчера отображает список доступных версий Minecraft. Вы можете фильтровать версии по типу загрузчика, использовать поиск и пролистывать страницы.</p>
+                        <h2>Фильтры</h2>
+                        <ul>
+                            <li><strong>Vanilla</strong> — оригинальные версии Minecraft без модификаций.</li>
+                            <li><strong>Fabric</strong> — версии с предустановленным Fabric Loader.</li>
+                            <li><strong>Forge</strong> — версии с Forge (MinecraftForge).</li>
+                            <li><strong>Quilt</strong> — версии с Quilt Loader (бета).</li>
+                            <li><strong>OptiFine</strong> — версии с интегрированным OptiFine.</li>
+                        </ul>
+                        <h2>Запуск игры</h2>
+                        <p>Выберите нужную версию из списка и нажмите кнопку <strong>«Играть»</strong> в нижней панели. Лаунчер автоматически установит выбранный загрузчик (Fabric, Forge или Quilt) через библиотеку <code>@xmcl/installer</code>.</p>
+                        <div class="info-box">Нижняя панель также содержит селектор версий и дополнительную информацию о выбранной версии.</div>
+                    `
+                },
+                'fabric': {
+                    title: 'Установка Fabric',
+                    content: `
+                        <h1>Установка Fabric</h1>
+                        <p>Fabric — это легковесный загрузчик модов, обеспечивающий высокую производительность и широкую совместимость. WesNal автоматически устанавливает Fabric при выборе соответствующей версии.</p>
+                        <h2>Инструкция</h2>
+                        <ol>
+                            <li>Откройте библиотеку версий в лаунчере.</li>
+                            <li>В списке найдите версию с тегом <strong>Fabric</strong> (например, <code>1.21.4-fabric-0.16.10</code>).</li>
+                            <li>Выберите версию и нажмите <strong>«Играть»</strong>.</li>
+                            <li>Лаунчер автоматически скачает и установит Fabric Loader в папку игры.</li>
+                            <li>После первого запуска в папке игры появится директория <code>mods</code>, куда можно добавлять Fabric-моды.</li>
+                        </ol>
+                        <div class="info-box">Fabric Loader 0.19.x поддерживает Minecraft вплоть до версии 26.x. Для старых версий используйте Fabric Loader 0.16.x.</div>
+                        <div class="warning-box">Не устанавливайте Forge-моды в папку <code>mods</code> при использовании Fabric — это вызовет конфликт. Используйте только моды, совместимые с Fabric.</div>
+                    `
+                },
+                'forge-quilt': {
+                    title: 'Установка Forge и Quilt',
+                    content: `
+                        <h1>Установка Forge и Quilt</h1>
+                        <h2>Forge</h2>
+                        <p>Forge — классический загрузчик модов с огромной базой совместимых модификаций. Для установки:</p>
+                        <ol>
+                            <li>В библиотеке версий выберите версию с тегом <strong>Forge</strong> (например, <code>1.20.4-forge-...</code>).</li>
+                            <li>Нажмите <strong>«Играть»</strong> — лаунчер автоматически установит Forge.</li>
+                            <li>После установки Forge-моды можно помещать в папку <code>mods</code>.</li>
+                        </ol>
+                        <h2>Quilt</h2>
+                        <p>Quilt — современный форк Fabric с расширенной функциональностью. Поддерживаются версии Minecraft 1.21.5 и выше.</p>
+                        <ol>
+                            <li>Выберите версию с тегом <strong>Quilt</strong> из списка.</li>
+                            <li>Нажмите <strong>«Играть»</strong> для автоматической установки Quilt Loader.</li>
+                        </ol>
+                        <div class="warning-box">Quilt использует бета-загрузчик <code>0.30.0-beta.7</code>. Некоторые моды могут быть несовместимы. Проверяйте совместимость на странице мода в Modrinth.</div>
+                    `
+                },
+                'mods': {
+                    title: 'Поиск и установка модов (Modrinth)',
+                    content: `
+                        <h1>Поиск и установка модов</h1>
+                        <p>WesNal напрямую интегрирован с <strong>Modrinth</strong> — крупнейшим каталогом модов для Minecraft. Вы можете искать, просматривать и устанавливать моды, не покидая лаунчер.</p>
+                        <h2>Как найти мод</h2>
+                        <ol>
+                            <li>Перейдите на вкладку <strong>«Дополнения»</strong> в лаунчере.</li>
+                            <li>Введите название мода в строку поиска.</li>
+                            <li>Используйте фильтры: <strong>Моды</strong>, <strong>Ресурспаки</strong>, <strong>Шейдеры</strong>.</li>
+                            <li>Просматривайте карточки с иконками, названиями и краткими описаниями.</li>
+                        </ol>
+                        <h2>Установка</h2>
+                        <p>Нажмите <strong>«Установить»</strong> для быстрой установки последней совместимой версии мода. Или нажмите <strong>«Подробнее»</strong>, чтобы открыть модальное окно с полным описанием, скриншотами и выбором конкретной версии игры и загрузчика.</p>
+                        <div class="info-box">Лаунчер работает напрямую с Modrinth API, обеспечивая актуальность данных и быструю загрузку файлов.</div>
+                    `
+                },
+                'modpacks': {
+                    title: 'Сборки (модпаки)',
+                    content: `
+                        <h1>Сборки (модпаки)</h1>
+                        <p>WesNal позволяет создавать собственные сборки модов и управлять ими. Это удобно для организации разных наборов модификаций под разные стили игры.</p>
+                        <h2>Создание сборки</h2>
+                        <ol>
+                            <li>Нажмите кнопку <strong>«Новая сборка»</strong> в разделе сборок.</li>
+                            <li>Задайте имя сборки и выберите версию Minecraft.</li>
+                            <li>Используйте поиск для добавления модов в сборку.</li>
+                            <li>Сохраните сборку — она появится в вашем списке.</li>
+                        </ol>
+                        <h2>Управление</h2>
+                        <ul>
+                            <li><strong>Редактировать</strong> — изменить состав модов или настройки сборки.</li>
+                            <li><strong>Экспортировать</strong> — сохранить сборку в файл <code>.wesnalpack</code> для обмена с друзьями.</li>
+                            <li><strong>Удалить</strong> — удалить ненужную сборку.</li>
+                        </ul>
+                    `
+                },
+                'console': {
+                    title: 'Консоль лаунчера',
+                    content: `
+                        <h1>Консоль лаунчера</h1>
+                        <p>Встроенный терминал WesNal отображает логи Minecraft в реальном времени: запуск, ошибки, прогресс загрузки и игровые события.</p>
+                        <h2>Доступные команды</h2>
+                        <ul>
+                            <li><code>help</code> — показать список всех команд.</li>
+                            <li><code>clear</code> — очистить вывод консоли.</li>
+                            <li><code>gc</code> — принудительный запуск сборщика мусора Java.</li>
+                            <li><code>ram</code> — показать текущее использование ОЗУ.</li>
+                            <li><code>version</code> — вывести версию лаунчера и Minecraft.</li>
+                            <li><code>java</code> — показать информацию об установленной Java.</li>
+                            <li><code>ping</code> — проверить соединение с серверами Mojang.</li>
+                        </ul>
+                        <div class="info-box">Консоль особенно полезна для диагностики проблем: если игра не запускается, логи покажут точную причину ошибки.</div>
+                    `
+                },
+                'settings': {
+                    title: 'Настройки лаунчера',
+                    content: `
+                        <h1>Настройки лаунчера</h1>
+                        <p>WesNal предлагает <strong>12 категорий настроек</strong>, позволяющих тонко настроить лаунчер под ваши предпочтения. Все изменения применяются на лету.</p>
+                        <h2>Категории</h2>
+                        <ul>
+                            <li><strong>Launcher</strong> — язык интерфейса, поведение при запуске, сворачивание в трей.</li>
+                            <li><strong>Game</strong> — игровой ник, версия игры по умолчанию, приоритет процесса.</li>
+                            <li><strong>Display</strong> — разрешение экрана, полноэкранный режим, FPS-лимит, гамма.</li>
+                            <li><strong>Performance</strong> — выделение ОЗУ (в ГБ), количество потоков CPU, сборщик мусора (Garbage Collector).</li>
+                            <li><strong>Java</strong> — путь к исполняемому файлу Java, JVM-аргументы.</li>
+                            <li><strong>Assets</strong> — директория игры, проверка целостности файлов.</li>
+                            <li><strong>Accounts</strong> — тип аккаунта (Microsoft, офлайн), управление профилями.</li>
+                            <li><strong>Mods</strong> — модлоадер по умолчанию, лимит памяти для модов.</li>
+                            <li><strong>Network</strong> — настройки прокси, таймауты соединений.</li>
+                            <li><strong>Social</strong> — Discord Rich Presence (отображение статуса в Discord).</li>
+                            <li><strong>Control</strong> — чувствительность UI, горячие клавиши.</li>
+                            <li><strong>Experimental</strong> — бета-функции и экспериментальные опции.</li>
+                        </ul>
+                        <div class="warning-box">Экспериментальные опции могут быть нестабильными. Включайте их только если понимаете возможные последствия.</div>
+                    `
+                },
+                'wno-core': {
+                    title: 'WNO Core (оптимизация)',
+                    content: `
+                        <h1>WNO Core — оптимизация одним кликом</h1>
+                        <p><strong>WNO Core</strong> — это автоматическая система оптимизации, которая подбирает и устанавливает лучшие производительные моды для вашей версии Minecraft.</p>
+                        <h2>Что входит в WNO Core</h2>
+                        <ul>
+                            <li><strong>Sodium</strong> — значительное увеличение FPS за счёт оптимизации рендеринга.</li>
+                            <li><strong>Lithium</strong> — оптимизация серверной логики (даже в одиночной игре).</li>
+                            <li><strong>Iris Shaders</strong> — поддержка шейдеров с минимальным влиянием на производительность.</li>
+                            <li>И другие оптимизационные моды, подобранные под конкретную версию.</li>
+                        </ul>
+                        <h2>Как установить</h2>
+                        <ol>
+                            <li>Перейдите в <strong>Настройки</strong> лаунчера.</li>
+                            <li>Найдите раздел WNO Core и нажмите <strong>«Установить WNO Core»</strong>.</li>
+                            <li>Выберите версию игры и загрузчик (Fabric рекомендуется).</li>
+                            <li>Лаунчер автоматически скачает и установит все необходимые моды.</li>
+                        </ol>
+                        <p>Конфигурация WNO Core сохраняется в файле <code>wno-core.json</code> в папке лаунчера.</p>
+                        <div class="info-box">WNO Core обновляется независимо от лаунчера, поэтому вы всегда получаете актуальные версии оптимизационных модов.</div>
+                    `
+                },
+                'microsoft-auth': {
+                    title: 'Microsoft-авторизация',
+                    content: `
+                        <h1>Microsoft-авторизация</h1>
+                        <p>WesNal поддерживает вход через настоящий Microsoft-аккаунт, что даёт доступ к лицензионному скину, сессионным серверам и полной функциональности Minecraft.</p>
+                        <h2>Как войти</h2>
+                        <ol>
+                            <li>Откройте <strong>Управление аккаунтом</strong> в лаунчере.</li>
+                            <li>Перейдите на вкладку <strong>Microsoft</strong>.</li>
+                            <li>Нажмите <strong>«Войти через Microsoft»</strong>.</li>
+                            <li>Лаунчер откроет окно браузера (через MSMC) для авторизации.</li>
+                            <li>После успешного входа ваш аккаунт будет привязан к лаунчеру.</li>
+                        </ol>
+                        <div class="warning-box">Для работы Microsoft-авторизации требуется установленный пакет MSMC. Если вход не работает, убедитесь, что пакет установлен корректно.</div>
+                        <div class="info-box">После входа через Microsoft вы получите доступ к своему лицензионному скину и сможете играть на серверах с лицензионной проверкой.</div>
+                    `
+                },
+                'diagnostics': {
+                    title: 'Диагностика системы',
+                    content: `
+                        <h1>Диагностика системы</h1>
+                        <p>Страница диагностики отображает подробную информацию о вашем компьютере и даёт рекомендации по оптимизации производительности Minecraft.</p>
+                        <h2>Отображаемая информация</h2>
+                        <ul>
+                            <li><strong>Процессор</strong> — модель, количество ядер, тактовая частота.</li>
+                            <li><strong>ОЗУ</strong> — общий объём, доступно, использование.</li>
+                            <li><strong>Java</strong> — версия, путь установки, архитектура.</li>
+                            <li><strong>ОС</strong> — версия Windows, архитектура (64/32 бит).</li>
+                        </ul>
+                        <h2>Оптимизация</h2>
+                        <p>Нажмите кнопку <strong>«Оптимизировать»</strong>, и лаунчер автоматически подберёт оптимальные настройки ОЗУ и потоков CPU для вашей системы.</p>
+                        <div class="info-box">Рекомендуется запускать диагностику перед первым запуском игры и после обновления оборудования.</div>
+                    `
+                },
+                'troubleshooting': {
+                    title: 'Решение проблем',
+                    content: `
+                        <h1>Решение проблем</h1>
+                        <h2>Частые ошибки и их решения</h2>
+                        <h3>«Не удалось найти Java»</h3>
+                        <p>Установите Java 17 или новее с официального сайта <code>adoptium.net</code>. Затем укажите путь к Java в настройках лаунчера (категория <strong>Java</strong>).</p>
+                        <h3>«Ошибка запуска Fabric/Forge»</h3>
+                        <p>Проверьте совместимость версии загрузчика с выбранной версией Minecraft. Попробуйте выбрать другую версию загрузчика из списка.</p>
+                        <h3>«Бесконечная загрузка версий»</h3>
+                        <p>Проверьте интернет-соединение. Убедитесь, что брандмауэр или антивирус не блокируют лаунчер. Попробуйте использовать встроенный список версий.</p>
+                        <h3>«Не устанавливаются моды»</h3>
+                        <p>Проверьте, существует ли папка <code>mods</code> в директории игры. Временно отключите антивирус — некоторые антивирусы блокируют запись в папку <code>mods</code>.</p>
+                        <h3>«Не работает Microsoft-вход»</h3>
+                        <p>Требуется установленный пакет MSMC. Переустановите лаунчер или обратитесь в поддержку в Discord.</p>
+                        <div class="danger-box">Если ни одно решение не помогло, обратитесь в поддержку через <strong>Discord</strong> с приложением логов консоли.</div>
+                    `
+                },
+                'glossary': {
+                    title: 'Глоссарий',
+                    content: `
+                        <h1>Глоссарий</h1>
+                        <ul>
+                            <li><strong>Minecraft Launcher Core</strong> — ядро лаунчера, отвечающее за загрузку и запуск игры.</li>
+                            <li><strong>@xmcl/installer</strong> — библиотека для автоматической установки Fabric, Forge и Quilt.</li>
+                            <li><strong>MSMC</strong> — Microsoft Minecraft Client, пакет для авторизации через Microsoft-аккаунт.</li>
+                            <li><strong>Glassmorphism</strong> — стиль дизайна с полупрозрачными размытыми поверхностями (<code>backdrop-filter: blur</code>).</li>
+                            <li><strong>Electron</strong> — фреймворк для создания настольных приложений с использованием веб-технологий.</li>
+                            <li><strong>Modrinth</strong> — открытый каталог модов для Minecraft с публичным API.</li>
+                            <li><strong>WNO Core</strong> — WesNal Optimization Core, система автоматической установки оптимизационных модов.</li>
+                        </ul>
+                    `
+                }
+            };
 
-<div id="lightbox" class="lightbox">
-    <span class="close-lightbox">&times;</span>
-    <div class="lightbox-content" id="lightboxInner">
-        <div style="text-align:center; padding:30px;"><i class="fas fa-image" style="font-size: 3rem;"></i><p style="margin-top:20px;">Демо-скриншот интерфейса</p></div>
-    </div>
-</div>
+            const wikiSectionOrder = ['intro', 'installation', 'versions', 'fabric', 'forge-quilt', 'mods', 'modpacks',
+                'console', 'settings', 'wno-core', 'microsoft-auth', 'diagnostics', 'troubleshooting', 'glossary'
+            ];
+            let currentWikiSection = 'intro';
+            let wikiSearchQuery = '';
 
-<script>
-    // mobile nav
-    const mobileBtn = document.getElementById('mobileMenuBtn');
-    const navLinksDiv = document.getElementById('navLinks');
-    mobileBtn.addEventListener('click', () => {
-        navLinksDiv.classList.toggle('mobile-open');
-    });
-    document.querySelectorAll('.nav-links a').forEach(link => {
-        link.addEventListener('click', () => navLinksDiv.classList.remove('mobile-open'));
-    });
-    // smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === "#") return;
-            const target = document.querySelector(targetId);
-            if (target) {
-                e.preventDefault();
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const navLinks = document.getElementById('navLinks');
+            const burgerBtn = document.getElementById('burgerBtn');
+            const overlay = document.getElementById('overlay');
+            const siteHeader = document.getElementById('siteHeader');
+            const scrollTopBtn = document.getElementById('scrollTopBtn');
+            const wikiSidebar = document.getElementById('wikiSidebar');
+            const wikiNavList = document.getElementById('wikiNavList');
+            const wikiContentInner = document.getElementById('wikiContentInner');
+            const wikiCrumbSection = document.getElementById('wikiCrumbSection');
+            const wikiSearchInput = document.getElementById('wikiSearch');
+            const wikiNoResults = document.getElementById('wikiNoResults');
+            const particlesContainer = document.getElementById('particlesContainer');
+
+            function createParticles() {
+                if (!particlesContainer) return;
+                particlesContainer.innerHTML = '';
+                for (let i = 0; i < 35; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = (60 + Math.random() * 40) + '%';
+                    particle.style.animationDelay = Math.random() * 6 + 's';
+                    particle.style.animationDuration = (5 + Math.random() * 8) + 's';
+                    particle.style.width = (2 + Math.random() * 4) + 'px';
+                    particle.style.height = particle.style.width;
+                    particlesContainer.appendChild(particle);
+                }
             }
-        });
-    });
-    // windows download demo
-    const winBtn1 = document.getElementById('winDownloadBtn');
-    const winHero = document.getElementById('winHeroBtn');
-    const winHandler = () => alert('Скачивание WesLauncher для Windows (демо-версия). Установщик будет доступен в ближайшее время.');
-    if (winBtn1) winBtn1.addEventListener('click', winHandler);
-    if (winHero) winHero.addEventListener('click', winHandler);
-    // lightbox gallery
-    const lightbox = document.getElementById('lightbox');
-    const closeLight = document.querySelector('.close-lightbox');
-    const lightboxInner = document.getElementById('lightboxInner');
-    const screenCards = document.querySelectorAll('.screenshot-card');
-    const screenContent = {
-        1: { title: 'Выбор версии Minecraft', desc: 'Главный экран: все версии, снэпшоты, Forge/Fabric.' },
-        2: { title: 'Менеджер модов', desc: 'Удобный список модов, включение/отключение и сортировка.' },
-        3: { title: 'Настройки производительности', desc: 'Выделение ОЗУ, путь к Java, дополнительные параметры.' }
-    };
-    screenCards.forEach((card, idx) => {
-        const key = (idx+1).toString();
-        card.addEventListener('click', () => {
-            const data = screenContent[key] || { title: 'Интерфейс', desc: 'Современный лаунчер WesLauncher' };
-            lightboxInner.innerHTML = `
-                <div style="text-align: center; padding: 28px;">
-                    <i class="fas fa-window-maximize" style="font-size: 3rem; color:#7CB0DC;"></i>
-                    <h3 style="margin: 20px 0 10px;">${data.title}</h3>
-                    <p style="color:#CCE2FF;">${data.desc}</p>
-                    <div style="background: #0F253B; border-radius: 28px; padding: 28px; margin-top: 18px;">
-                        <i class="fas fa-image" style="font-size: 2.5rem;"></i>
-                        <p style="margin-top: 12px;">✨ Превью интерфейса</p>
-                    </div>
-                </div>
-            `;
-            lightbox.classList.add('active');
-        });
-    });
-    closeLight.addEventListener('click', () => lightbox.classList.remove('active'));
-    lightbox.addEventListener('click', (e) => { if(e.target === lightbox) lightbox.classList.remove('active'); });
-    // accordion FAQ
-    const faqItems = document.querySelectorAll('.faq-item');
-    faqItems.forEach(item => {
-        const q = item.querySelector('.faq-question');
-        q.addEventListener('click', () => {
-            const active = item.classList.contains('active');
-            faqItems.forEach(i => i.classList.remove('active'));
-            if (!active) item.classList.add('active');
-        });
-    });
-    // scroll fade observer
-    const faders = document.querySelectorAll('.fade-up');
-    const appearObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('appear');
-                obs.unobserve(entry.target);
+
+            function buildWikiNav() {
+                wikiNavList.innerHTML = '';
+                wikiSectionOrder.forEach(key => {
+                    const data = wikiContent[key];
+                    const li = document.createElement('li');
+                    li.setAttribute('data-wiki-key', key);
+                    const a = document.createElement('a');
+                    a.href = '#wiki/' + key;
+                    a.innerHTML = '<i class="bx bx-chevron-right"></i> ' + data.title;
+                    a.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        selectWikiSection(key, true);
+                    });
+                    li.appendChild(a);
+                    wikiNavList.appendChild(li);
+                });
             }
-        });
-    }, { threshold: 0.1 });
-    faders.forEach(el => appearObserver.observe(el));
-    setTimeout(() => {
-        faders.forEach(el => {
-            const rect = el.getBoundingClientRect();
-            if (rect.top < window.innerHeight - 80) el.classList.add('appear');
-        });
-    }, 150);
-    // detect OS to highlight Windows card
-    const userAgent = navigator.userAgent;
-    if (userAgent.indexOf('Win') !== -1) {
-        const winCard = document.querySelector('.download-card[data-os="win"]');
-        if (winCard) {
-            let badge = document.createElement('div');
-            badge.innerText = 'Рекомендуется';
-            badge.style.background = '#1F6392';
-            badge.style.borderRadius = '40px';
-            badge.style.padding = '4px 14px';
-            badge.style.fontSize = '0.7rem';
-            badge.style.display = 'inline-block';
-            badge.style.marginBottom = '10px';
-            winCard.querySelector('h3').insertAdjacentElement('beforebegin', badge);
-        }
-    }
-</script>
+
+            function selectWikiSection(key, updateHash) {
+                currentWikiSection = key;
+                const data = wikiContent[key];
+                wikiContentInner.innerHTML = data.content;
+                wikiCrumbSection.textContent = data.title;
+                document.querySelectorAll('#wikiNavList li a').forEach(a => a.classList.remove('active'));
+                const activeLi = document.querySelector('#wikiNavList li[data-wiki-key="' + key + '"] a');
+                if (activeLi) activeLi.classList.add('active');
+                if (updateHash) {
+                    window.location.hash = 'wiki/' + key;
+                }
+                wikiContentInner.parentElement.scrollTop = 0;
+                filterWikiNav();
+            }
+
+            function filterWikiNav() {
+                const q = wikiSearchQuery.toLowerCase().trim();
+                let visibleCount = 0;
+                document.querySelectorAll('#wikiNavList li').forEach(li => {
+                    const key = li.getAttribute('data-wiki-key');
+                    const data = wikiContent[key];
+                    const titleMatch = data.title.toLowerCase().includes(q);
+                    const contentMatch = data.content.toLowerCase().includes(q);
+                    if (!q || titleMatch || contentMatch) {
+                        li.classList.remove('hidden-by-search');
+                        visibleCount++;
+                    } else {
+                        li.classList.add('hidden-by-search');
+                    }
+                });
+                wikiNoResults.style.display = visibleCount === 0 ? 'block' : 'none';
+            }
+
+            function navigateToPage(pageName) {
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                const targetPage = document.getElementById('page-' + pageName);
+                if (targetPage) targetPage.classList.add('active');
+                document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+                const navLink = document.querySelector('.nav-links a[data-page="' + pageName + '"]');
+                if (navLink) navLink.classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                closeMobileMenu();
+            }
+
+            function handleHashChange() {
+                const hash = window.location.hash.replace('#', '');
+                if (!hash || hash === 'home') {
+                    navigateToPage('home');
+                    return;
+                }
+                if (hash === 'features') { navigateToPage('features'); return; }
+                if (hash === 'download') { navigateToPage('download'); return; }
+                if (hash === 'about') { navigateToPage('about'); return; }
+                if (hash === 'wiki') {
+                    navigateToPage('wiki');
+                    selectWikiSection('intro', false);
+                    return;
+                }
+                if (hash.startsWith('wiki/')) {
+                    const sectionKey = hash.replace('wiki/', '');
+                    if (wikiContent[sectionKey]) {
+                        navigateToPage('wiki');
+                        selectWikiSection(sectionKey, false);
+                    } else {
+                        navigateToPage('wiki');
+                        selectWikiSection('intro', false);
+                    }
+                    return;
+                }
+                navigateToPage('home');
+            }
+
+            function closeMobileMenu() {
+                navLinks.classList.remove('open');
+                overlay.classList.remove('show');
+                if (burgerBtn) burgerBtn.innerHTML = '<i class="bx bx-menu"></i>';
+                document.body.style.overflow = '';
+            }
+
+            function openMobileMenu() {
+                navLinks.classList.add('open');
+                overlay.classList.add('show');
+                if (burgerBtn) burgerBtn.innerHTML = '<i class="bx bx-x"></i>';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function detectOS() {
+                const ua = navigator.userAgent || navigator.platform || '';
+                if (/Windows|Win32|Win64|WinNT/.test(ua)) return 'Windows';
+                if (/Mac|Macintosh|macOS/.test(ua)) return 'macOS';
+                if (/Linux|X11/.test(ua)) return 'Linux';
+                return 'Unknown';
+            }
+
+            function updateDownloadPage() {
+                const os = detectOS();
+                const osBadge = document.getElementById('osBadge');
+                const osName = document.getElementById('osName');
+                const downloadBtnOs = document.getElementById('downloadBtnOs');
+                const downloadBtn = document.getElementById('downloadBtn');
+                const otherOsMsg = document.getElementById('otherOsMsg');
+                if (os === 'Windows') {
+                    if (osBadge) osBadge.textContent = 'Windows';
+                    if (osName) osName.textContent = 'Windows';
+                    if (downloadBtnOs) downloadBtnOs.textContent = 'Windows';
+                    if (downloadBtn) downloadBtn.style.display = 'inline-flex';
+                    if (otherOsMsg) otherOsMsg.style.display = 'none';
+                } else {
+                    if (osBadge) osBadge.textContent = os;
+                    if (osName) osName.textContent = os;
+                    if (downloadBtnOs) downloadBtnOs.textContent = os;
+                    if (downloadBtn) downloadBtn.style.display = 'inline-flex';
+                    if (otherOsMsg) otherOsMsg.style.display = 'block';
+                }
+            }
+
+            burgerBtn.addEventListener('click', function() {
+                if (navLinks.classList.contains('open')) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            });
+            overlay.addEventListener('click', closeMobileMenu);
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function() {
+                    closeMobileMenu();
+                });
+            });
+
+            window.addEventListener('hashchange', handleHashChange);
+            window.addEventListener('scroll', function() {
+                const scrolled = window.scrollY > 20;
+                if (siteHeader) siteHeader.classList.toggle('scrolled', scrolled);
+                if (scrollTopBtn) scrollTopBtn.classList.toggle('visible', window.scrollY > 400);
+            });
+
+            scrollTopBtn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            wikiSearchInput.addEventListener('input', function() {
+                wikiSearchQuery = this.value;
+                filterWikiNav();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeMobileMenu();
+            });
+
+            createParticles();
+            buildWikiNav();
+            updateDownloadPage();
+            handleHashChange();
+            if (scrollTopBtn) scrollTopBtn.classList.remove('visible');
+            if (siteHeader) siteHeader.classList.remove('scrolled');
+        })();
+    </script>
 </body>
 </html>
