@@ -1,1 +1,1 @@
-# WesLauncher
+# Gavans-Squad
