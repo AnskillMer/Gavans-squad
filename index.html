@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gavans Squad — Brawl Stars Club</title>
+    <!-- Material Symbols для иконок -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,400,0,0" rel="stylesheet" />
     <style>
         :root {
             --bg: #faf7f2;
@@ -26,6 +28,7 @@
             --radius-md: 14px;
             --radius-lg: 20px;
             --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --diagonal-cut: 20px;
         }
 
         * {
@@ -43,6 +46,23 @@
             -moz-osx-font-smoothing: grayscale;
             background-image: radial-gradient(ellipse at 50% 0%, rgba(200, 150, 62, 0.06) 0%, transparent 60%),
                 radial-gradient(ellipse at 80% 100%, rgba(58, 90, 140, 0.04) 0%, transparent 50%);
+            /* Запрет выделения текста на всём сайте */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+        /* Разрешаем выделение только для тега клуба */
+        .tag-display,
+        .tag-display *,
+        .tag-bottom,
+        .tag-bottom *,
+        .tag-text {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
         }
 
         /* ========== HEADER / NAV ========== */
@@ -78,7 +98,7 @@
         .logo-icon {
             width: 44px;
             height: 44px;
-            border-radius: var(--radius-sm);
+            border-radius: 10px;
             background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
             display: flex;
             align-items: center;
@@ -160,11 +180,28 @@
         .hero {
             max-width: 1100px;
             margin: 0 auto;
-            padding: 60px 24px 50px;
+            padding: 70px 24px 60px;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        /* Диагональный акцент на фоне */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, rgba(200, 150, 62, 0.12) 0%, transparent 70%);
+            clip-path: polygon(100% 0, 0% 100%, 100% 100%);
+            z-index: 0;
+            pointer-events: none;
         }
         .hero-badge {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
             background: var(--surface-alt);
             color: var(--gold-dark);
             font-weight: 600;
@@ -174,6 +211,12 @@
             letter-spacing: 0.5px;
             margin-bottom: 18px;
             border: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge .material-symbols-rounded {
+            font-size: 1.1rem;
+            color: var(--gold);
         }
         .hero h1 {
             font-size: clamp(2.2rem, 5vw, 3.4rem);
@@ -182,12 +225,14 @@
             line-height: 1.15;
             margin-bottom: 12px;
             color: var(--text);
+            position: relative;
+            z-index: 1;
         }
         .hero h1 .accent {
             color: var(--gold-dark);
             position: relative;
         }
-        .hero .tag-display {
+        .tag-display {
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -201,8 +246,11 @@
             letter-spacing: 0.8px;
             margin-bottom: 10px;
             box-shadow: var(--shadow-sm);
+            position: relative;
+            z-index: 1;
+            transition: var(--transition);
         }
-        .hero .tag-display .copy-btn {
+        .tag-display .copy-btn {
             background: none;
             border: none;
             cursor: pointer;
@@ -214,18 +262,19 @@
             display: flex;
             align-items: center;
         }
-        .hero .tag-display .copy-btn:hover {
+        .tag-display .copy-btn:hover {
             background: var(--surface-alt);
             color: var(--text);
         }
-        .hero .copy-tooltip {
+        .copy-tooltip {
             font-size: 0.75rem;
             color: var(--gold-dark);
             font-weight: 500;
             opacity: 0;
             transition: opacity 0.3s;
+            margin-left: 4px;
         }
-        .hero .copy-tooltip.show {
+        .copy-tooltip.show {
             opacity: 1;
         }
         .hero p.subtitle {
@@ -234,6 +283,8 @@
             max-width: 500px;
             margin: 16px auto 0;
             font-weight: 400;
+            position: relative;
+            z-index: 1;
         }
 
         /* ========== SECTIONS ========== */
@@ -241,6 +292,7 @@
             max-width: 1100px;
             margin: 0 auto;
             padding: 0 24px 60px;
+            position: relative;
         }
         .section-title {
             font-size: 1.5rem;
@@ -262,26 +314,37 @@
             border-radius: 2px;
         }
 
+        /* ========== ДИАГОНАЛЬНЫЕ ВЫРЕЗЫ ========== */
+        .card,
+        .leader-card,
+        .cta-box {
+            clip-path: polygon(0 0, calc(100% - var(--diagonal-cut)) 0, 100% var(--diagonal-cut), 100% 100%, 0 100%);
+            background: var(--surface);
+            /* Тень через filter для корректного отображения с clip-path */
+            filter: drop-shadow(0 4px 14px rgba(44, 36, 22, 0.08));
+            transition: var(--transition);
+        }
+        .card:hover,
+        .leader-card:hover,
+        .cta-box:hover {
+            filter: drop-shadow(0 8px 22px rgba(44, 36, 22, 0.14));
+            transform: translateY(-2px);
+        }
+        .card,
+        .leader-card {
+            padding: 24px 22px;
+            position: relative;
+            overflow: hidden;
+        }
+        .cta-box {
+            padding: 40px 30px;
+        }
+
         /* ========== INFO CARDS ========== */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 20px;
-        }
-        .card {
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            padding: 24px 22px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-        .card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
-            border-color: #d5ccbb;
         }
         .card-icon {
             width: 42px;
@@ -292,7 +355,6 @@
             justify-content: center;
             font-size: 1.3rem;
             margin-bottom: 14px;
-            background: var(--surface-alt);
         }
         .card-icon.trophy {
             background: #fdf3e0;
@@ -309,6 +371,9 @@
         .card-icon.active {
             background: #fce8e6;
             color: var(--red-accent);
+        }
+        .card-icon .material-symbols-rounded {
+            font-size: 1.6rem;
         }
         .card h3 {
             font-size: 0.8rem;
@@ -337,19 +402,9 @@
             gap: 20px;
         }
         .leader-card {
-            background: var(--surface);
-            border-radius: var(--radius-md);
-            padding: 26px 24px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-sm);
             display: flex;
             align-items: center;
             gap: 18px;
-            transition: var(--transition);
-        }
-        .leader-card:hover {
-            box-shadow: var(--shadow-md);
-            transform: translateY(-2px);
         }
         .leader-card.president {
             border-left: 4px solid var(--gold);
@@ -389,7 +444,7 @@
             color: var(--text);
             letter-spacing: -0.2px;
         }
-        .leader-info .badge-role {
+        .badge-role {
             display: inline-block;
             font-size: 0.7rem;
             font-weight: 600;
@@ -438,7 +493,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
         }
         .req-icon.check {
@@ -453,6 +508,9 @@
             background: #e8edf5;
             color: var(--blue);
         }
+        .req-icon .material-symbols-rounded {
+            font-size: 1.2rem;
+        }
 
         /* ========== CTA ========== */
         .cta-section {
@@ -462,11 +520,6 @@
             margin: 0 auto;
         }
         .cta-box {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 40px 30px;
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow-md);
             display: inline-block;
             max-width: 500px;
             width: 100%;
@@ -482,7 +535,7 @@
             margin-bottom: 20px;
             font-size: 0.95rem;
         }
-        .cta-box .btn-join-large {
+        .btn-join-large {
             display: inline-block;
             background: var(--blue);
             color: #fff;
@@ -497,12 +550,12 @@
             cursor: pointer;
             border: none;
         }
-        .cta-box .btn-join-large:hover {
+        .btn-join-large:hover {
             background: var(--blue-dark);
             box-shadow: 0 6px 22px rgba(30, 58, 95, 0.35);
             transform: translateY(-2px);
         }
-        .cta-box .tag-bottom {
+        .tag-bottom {
             margin-top: 16px;
             font-size: 0.85rem;
             color: var(--text-secondary);
@@ -637,12 +690,14 @@
 
     <!-- HERO -->
     <section class="hero animate-in" id="hero">
-        <span class="hero-badge">🏆 Brawl Stars Club</span>
+        <span class="hero-badge">
+            <span class="material-symbols-rounded">emoji_events</span> Brawl Stars Club
+        </span>
         <h1>Добро пожаловать в <span class="accent">Gavans Squad</span></h1>
         <div class="tag-display">
-            Тег: <strong>#CCQL9VPG</strong>
+            Тег: <strong class="tag-text">#CCQL9VPG</strong>
             <button class="copy-btn" onclick="copyTag()" title="Скопировать тег">
-                📋
+                <span class="material-symbols-rounded">content_copy</span>
             </button>
             <span class="copy-tooltip" id="copyTooltip">Скопировано!</span>
         </div>
@@ -654,25 +709,33 @@
         <h2 class="section-title">Информация о клубе</h2>
         <div class="card-grid">
             <div class="card">
-                <div class="card-icon trophy">🏆</div>
+                <div class="card-icon trophy">
+                    <span class="material-symbols-rounded">emoji_events</span>
+                </div>
                 <h3>Трофеи для входа</h3>
                 <div class="value">1 000</div>
                 <div class="sub-value">Минимальный порог</div>
             </div>
             <div class="card">
-                <div class="card-icon type">🔓</div>
+                <div class="card-icon type">
+                    <span class="material-symbols-rounded">lock_open</span>
+                </div>
                 <h3>Тип клуба</h3>
                 <div class="value">Открытый</div>
                 <div class="sub-value">Свободный вход</div>
             </div>
             <div class="card">
-                <div class="card-icon lang">🌍</div>
+                <div class="card-icon lang">
+                    <span class="material-symbols-rounded">public</span>
+                </div>
                 <h3>Язык общения</h3>
                 <div class="value">Русский</div>
                 <div class="sub-value">Родной язык</div>
             </div>
             <div class="card">
-                <div class="card-icon active">⚡</div>
+                <div class="card-icon active">
+                    <span class="material-symbols-rounded">bolt</span>
+                </div>
                 <h3>Главное требование</h3>
                 <div class="value">Активность</div>
                 <div class="sub-value">Быть в игре регулярно</div>
@@ -696,8 +759,8 @@
                 <div class="leader-avatar vet">S</div>
                 <div class="leader-info">
                     <span class="role">Ветеран</span>
-                    <div class="name">SUPER-GEIZ</div>
-                    <span class="badge-role badge-veteran">⭐ игрок</span>
+                    <div class="name">SIPER-GEIZ</div>
+                    <span class="badge-role badge-veteran">⭐ Опытный игрок</span>
                 </div>
             </div>
         </div>
@@ -708,23 +771,33 @@
         <h2 class="section-title">Требования и правила</h2>
         <ul class="req-list">
             <li>
-                <span class="req-icon check">✅</span>
+                <span class="req-icon check">
+                    <span class="material-symbols-rounded">check_circle</span>
+                </span>
                 <span><strong>Быть активным</strong> — заходить в игру регулярно, участвовать в жизни клуба.</span>
             </li>
             <li>
-                <span class="req-icon star">⭐</span>
+                <span class="req-icon star">
+                    <span class="material-symbols-rounded">star</span>
+                </span>
                 <span><strong>Иметь 1000+ трофеев</strong> — минимальный порог для вступления в клуб.</span>
             </li>
             <li>
-                <span class="req-icon msg">💬</span>
+                <span class="req-icon msg">
+                    <span class="material-symbols-rounded">chat</span>
+                </span>
                 <span><strong>Общаться на русском языке</strong> — чат клуба ведётся на русском.</span>
             </li>
             <li>
-                <span class="req-icon check">🤝</span>
+                <span class="req-icon check">
+                    <span class="material-symbols-rounded">handshake</span>
+                </span>
                 <span><strong>Уважать сокомандников</strong> — никакого токсичного поведения, мы за дружную игру.</span>
             </li>
             <li>
-                <span class="req-icon star">🎯</span>
+                <span class="req-icon star">
+                    <span class="material-symbols-rounded">track_changes</span>
+                </span>
                 <span><strong>Стремиться к победам</strong> — вместе мы сильнее, помогаем друг другу в рейтинговых боях.</span>
             </li>
         </ul>
@@ -749,7 +822,7 @@
     </footer>
 
     <script>
-        // Copy tag to clipboard
+        // Копирование тега в буфер обмена
         function copyTag() {
             const tag = '#CCQL9VPG';
             navigator.clipboard.writeText(tag).then(() => {
@@ -759,7 +832,7 @@
                     tooltip.classList.remove('show');
                 }, 1800);
             }).catch(() => {
-                // Fallback
+                // Фолбэк для старых браузеров
                 const textArea = document.createElement('textarea');
                 textArea.value = tag;
                 textArea.style.position = 'fixed';
@@ -776,7 +849,7 @@
             });
         }
 
-        // Sticky header shadow on scroll
+        // Добавление тени при прокрутке
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
             if (window.scrollY > 10) {
@@ -786,7 +859,7 @@
             }
         });
 
-        // Intersection Observer for animations
+        // Анимация появления при скролле
         const animatedElements = document.querySelectorAll('.animate-in');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -798,7 +871,6 @@
 
         animatedElements.forEach(el => {
             observer.observe(el);
-            // Ensure animation plays even if already in view
             el.style.animationPlayState = 'running';
         });
     </script>
