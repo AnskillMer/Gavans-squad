@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gavans Squad — Brawl Stars Club</title>
+    <style>
+        :root {
+            --bg: #faf7f2;
+            --surface: #ffffff;
+            --surface-alt: #f5f0e8;
+            --text: #2c2416;
+            --text-secondary: #6b5e4a;
+            --gold: #c8963e;
+            --gold-light: #e0c078;
+            --gold-dark: #8b5e2b;
+            --blue: #3a5a8c;
+            --blue-light: #5b7fb4;
+            --blue-dark: #1e3a5f;
+            --red-accent: #b8453a;
+            --border: #e5ddd0;
+            --shadow-sm: 0 1px 3px rgba(44, 36, 22, 0.06);
+            --shadow-md: 0 4px 16px rgba(44, 36, 22, 0.1);
+            --shadow-lg: 0 8px 32px rgba(44, 36, 22, 0.12);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            background-image: radial-gradient(ellipse at 50% 0%, rgba(200, 150, 62, 0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 100%, rgba(58, 90, 140, 0.04) 0%, transparent 50%);
+        }
+
+        /* ========== HEADER / NAV ========== */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(250, 247, 242, 0.85);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .header.scrolled {
+            box-shadow: var(--shadow-sm);
+        }
+        .header-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+        .logo-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(139, 94, 43, 0.25);
+        }
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .logo-text span {
+            color: var(--gold-dark);
+        }
+        .nav-links {
+            display: flex;
+            gap: 28px;
+            list-style: none;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 4px 0;
+        }
+        .nav-links a:hover {
+            color: var(--text);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            border-radius: 2px;
+            transition: var(--transition);
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .btn-join {
+            background: var(--blue);
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.2px;
+            box-shadow: 0 2px 10px rgba(30, 58, 95, 0.2);
+            white-space: nowrap;
+        }
+        .btn-join:hover {
+            background: var(--blue-dark);
+            box-shadow: 0 4px 18px rgba(30, 58, 95, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-join:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(30, 58, 95, 0.25);
+        }
+
+        /* ========== HERO ========== */
+        .hero {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 60px 24px 50px;
+            text-align: center;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: var(--surface-alt);
+            color: var(--gold-dark);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+        }
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.4rem);
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.15;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .hero h1 .accent {
+            color: var(--gold-dark);
+            position: relative;
+        }
+        .hero .tag-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.8px;
+            margin-bottom: 10px;
+            box-shadow: var(--shadow-sm);
+        }
+        .hero .tag-display .copy-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+        }
+        .hero .tag-display .copy-btn:hover {
+            background: var(--surface-alt);
+            color: var(--text);
+        }
+        .hero .copy-tooltip {
+            font-size: 0.75rem;
+            color: var(--gold-dark);
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .hero .copy-tooltip.show {
+            opacity: 1;
+        }
+        .hero p.subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 16px auto 0;
+            font-weight: 400;
+        }
+
+        /* ========== SECTIONS ========== */
+        .section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px 60px;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 24px;
+            letter-spacing: -0.3px;
+            position: relative;
+            display: inline-block;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -6px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        /* ========== INFO CARDS ========== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 24px 22px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+            border-color: #d5ccbb;
+        }
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 14px;
+            background: var(--surface-alt);
+        }
+        .card-icon.trophy {
+            background: #fdf3e0;
+            color: var(--gold-dark);
+        }
+        .card-icon.type {
+            background: #e8edf5;
+            color: var(--blue);
+        }
+        .card-icon.lang {
+            background: #f0ebe0;
+            color: #6b5e4a;
+        }
+        .card-icon.active {
+            background: #fce8e6;
+            color: var(--red-accent);
+        }
+        .card h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .card .value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.3px;
+        }
+        .card .sub-value {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        /* ========== LEADERSHIP ========== */
+        .leadership-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .leader-card {
+            background: var(--surface);
+            border-radius: var(--radius-md);
+            padding: 26px 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            transition: var(--transition);
+        }
+        .leader-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+        .leader-card.president {
+            border-left: 4px solid var(--gold);
+        }
+        .leader-card.veteran {
+            border-left: 4px solid var(--blue-light);
+        }
+        .leader-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #fff;
+        }
+        .leader-avatar.pres {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+        }
+        .leader-avatar.vet {
+            background: linear-gradient(135deg, var(--blue-light) 0%, var(--blue-dark) 100%);
+        }
+        .leader-info .role {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+        .leader-info .name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+            letter-spacing: -0.2px;
+        }
+        .leader-info .badge-role {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 50px;
+            margin-top: 4px;
+            letter-spacing: 0.4px;
+        }
+        .badge-president {
+            background: #fdf3e0;
+            color: var(--gold-dark);
+        }
+        .badge-veteran {
+            background: #e8edf5;
+            color: var(--blue-dark);
+        }
+
+        /* ========== REQUIREMENTS ========== */
+        .req-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .req-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--text);
+            padding: 14px 18px;
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            transition: var(--transition);
+        }
+        .req-list li:hover {
+            box-shadow: var(--shadow-md);
+        }
+        .req-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+        .req-icon.check {
+            background: #e6f0e6;
+            color: #3a7d3a;
+        }
+        .req-icon.star {
+            background: #fdf3e0;
+            color: var(--gold-dark);
+        }
+        .req-icon.msg {
+            background: #e8edf5;
+            color: var(--blue);
+        }
+
+        /* ========== CTA ========== */
+        .cta-section {
+            text-align: center;
+            padding: 40px 24px 60px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .cta-box {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 40px 30px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-md);
+            display: inline-block;
+            max-width: 500px;
+            width: 100%;
+        }
+        .cta-box h2 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+        .cta-box p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .cta-box .btn-join-large {
+            display: inline-block;
+            background: var(--blue);
+            color: #fff;
+            padding: 14px 36px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: var(--transition);
+            letter-spacing: 0.3px;
+            box-shadow: 0 3px 14px rgba(30, 58, 95, 0.25);
+            cursor: pointer;
+            border: none;
+        }
+        .cta-box .btn-join-large:hover {
+            background: var(--blue-dark);
+            box-shadow: 0 6px 22px rgba(30, 58, 95, 0.35);
+            transform: translateY(-2px);
+        }
+        .cta-box .tag-bottom {
+            margin-top: 16px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            font-weight: 500;
+        }
+
+        /* ========== FOOTER ========== */
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--border);
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .footer .disclaimer {
+            opacity: 0.7;
+            font-size: 0.75rem;
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: 10px 16px;
+                gap: 12px;
+            }
+            .nav-links {
+                gap: 14px;
+            }
+            .nav-links a {
+                font-size: 0.8rem;
+            }
+            .btn-join {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            .logo-text {
+                font-size: 1rem;
+            }
+            .logo-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            .hero {
+                padding: 40px 16px 30px;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .section {
+                padding: 0 16px 40px;
+            }
+            .card-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .leadership-grid {
+                grid-template-columns: 1fr;
+            }
+            .cta-box {
+                padding: 28px 20px;
+            }
+        }
+        @media (max-width: 480px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .nav-links {
+                display: none;
+            }
+            .header-inner {
+                justify-content: space-between;
+            }
+            .btn-join {
+                font-size: 0.75rem;
+                padding: 7px 14px;
+            }
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .animate-in {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        .delay-1 {
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+        .delay-2 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+        .delay-3 {
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+        .delay-4 {
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="header" id="header">
+        <div class="header-inner">
+            <a href="#" class="logo-area">
+                <div class="logo-icon">GS</div>
+                <span class="logo-text">Gavans <span>Squad</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#info">О клубе</a></li>
+                <li><a href="#leaders">Состав</a></li>
+                <li><a href="#reqs">Правила</a></li>
+            </ul>
+            <a href="#join" class="btn-join">Вступить</a>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero animate-in" id="hero">
+        <span class="hero-badge">🏆 Brawl Stars Club</span>
+        <h1>Добро пожаловать в <span class="accent">Gavans Squad</span></h1>
+        <div class="tag-display">
+            Тег: <strong>#CCQL9VPG</strong>
+            <button class="copy-btn" onclick="copyTag()" title="Скопировать тег">
+                📋
+            </button>
+            <span class="copy-tooltip" id="copyTooltip">Скопировано!</span>
+        </div>
+        <p class="subtitle">Активный и дружный клуб для игроков, которые любят Brawl Stars и хотят побеждать вместе.</p>
+    </section>
+
+    <!-- INFO CARDS -->
+    <section class="section animate-in delay-1" id="info">
+        <h2 class="section-title">Информация о клубе</h2>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-icon trophy">🏆</div>
+                <h3>Трофеи для входа</h3>
+                <div class="value">1 000</div>
+                <div class="sub-value">Минимальный порог</div>
+            </div>
+            <div class="card">
+                <div class="card-icon type">🔓</div>
+                <h3>Тип клуба</h3>
+                <div class="value">Открытый</div>
+                <div class="sub-value">Свободный вход</div>
+            </div>
+            <div class="card">
+                <div class="card-icon lang">🌍</div>
+                <h3>Язык общения</h3>
+                <div class="value">Русский</div>
+                <div class="sub-value">Родной язык</div>
+            </div>
+            <div class="card">
+                <div class="card-icon active">⚡</div>
+                <h3>Главное требование</h3>
+                <div class="value">Активность</div>
+                <div class="sub-value">Быть в игре регулярно</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- LEADERSHIP -->
+    <section class="section animate-in delay-2" id="leaders">
+        <h2 class="section-title">Руководство клуба</h2>
+        <div class="leadership-grid">
+            <div class="leader-card president">
+                <div class="leader-avatar pres">A</div>
+                <div class="leader-info">
+                    <span class="role">Президент · Главный</span>
+                    <div class="name">AnskillMer</div>
+                    <span class="badge-role badge-president">👑 Лидер клуба</span>
+                </div>
+            </div>
+            <div class="leader-card veteran">
+                <div class="leader-avatar vet">S</div>
+                <div class="leader-info">
+                    <span class="role">Ветеран</span>
+                    <div class="name">SIPER-GEIZ</div>
+                    <span class="badge-role badge-veteran">⭐ Опытный игрок</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REQUIREMENTS -->
+    <section class="section animate-in delay-3" id="reqs">
+        <h2 class="section-title">Требования и правила</h2>
+        <ul class="req-list">
+            <li>
+                <span class="req-icon check">✅</span>
+                <span><strong>Быть активным</strong> — заходить в игру регулярно, участвовать в жизни клуба.</span>
+            </li>
+            <li>
+                <span class="req-icon star">⭐</span>
+                <span><strong>Иметь 1000+ трофеев</strong> — минимальный порог для вступления в клуб.</span>
+            </li>
+            <li>
+                <span class="req-icon msg">💬</span>
+                <span><strong>Общаться на русском языке</strong> — чат клуба ведётся на русском.</span>
+            </li>
+            <li>
+                <span class="req-icon check">🤝</span>
+                <span><strong>Уважать сокомандников</strong> — никакого токсичного поведения, мы за дружную игру.</span>
+            </li>
+            <li>
+                <span class="req-icon star">🎯</span>
+                <span><strong>Стремиться к победам</strong> — вместе мы сильнее, помогаем друг другу в рейтинговых боях.</span>
+            </li>
+        </ul>
+    </section>
+
+    <!-- CTA / JOIN -->
+    <section class="cta-section animate-in delay-4" id="join">
+        <div class="cta-box">
+            <h2>Присоединяйся к Gavans Squad!</h2>
+            <p>Мы ждём активных игроков с 1000+ трофеев. Вступай в открытый клуб прямо сейчас.</p>
+            <button class="btn-join-large" onclick="copyTag()">
+                Скопировать тег #CCQL9VPG
+            </button>
+            <p class="tag-bottom">Или найди нас в Brawl Stars по тегу <strong>#CCQL9VPG</strong></p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>Gavans Squad &copy; 2025 — Клуб Brawl Stars</p>
+        <p class="disclaimer">Этот сайт не является официальным ресурсом Supercell. Brawl Stars — товарный знак Supercell Oy.</p>
+    </footer>
+
+    <script>
+        // Copy tag to clipboard
+        function copyTag() {
+            const tag = '#CCQL9VPG';
+            navigator.clipboard.writeText(tag).then(() => {
+                const tooltip = document.getElementById('copyTooltip');
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 1800);
+            }).catch(() => {
+                // Fallback
+                const textArea = document.createElement('textarea');
+                textArea.value = tag;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-9999px';
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                const tooltip = document.getElementById('copyTooltip');
+                tooltip.classList.add('show');
+                setTimeout(() => {
+                    tooltip.classList.remove('show');
+                }, 1800);
+            });
+        }
+
+        // Sticky header shadow on scroll
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Intersection Observer for animations
+        const animatedElements = document.querySelectorAll('.animate-in');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, { threshold: 0.15 });
+
+        animatedElements.forEach(el => {
+            observer.observe(el);
+            // Ensure animation plays even if already in view
+            el.style.animationPlayState = 'running';
+        });
+    </script>
+</body>
+</html>
